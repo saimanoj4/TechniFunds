@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-
 export interface WebsiteTable {
   company: any;
   currentMarketPrice: any;
@@ -53,8 +52,10 @@ export class AppComponent {
   supportResistanceChartPath: string="";
   changePercent: Number=0;
   changePercentColor: string="";
+  dailogBox: string="close";
 
   searchClick() {
+  
     this.selectFlag=0;
     this.websiteTableData="/assets/prediction_"+this.invDuration+".csv";
     //remember to remove irrelevant column names
@@ -70,6 +71,10 @@ export class AppComponent {
     this.flag=1;
     console.log("datasource");
     console.log(this.dataSource);
+  
+  }
+  closeDailog(){
+    this.dailogBox = 'close'
   }
   selectCompany(stock: any){
     this.sentimentChartPath="/assets/sentiment_graphs/"+stock.nseTicker+".jpg";
@@ -101,7 +106,7 @@ export class AppComponent {
     else{
       this.changePercentColor="red";
     }
-    
+    this.dailogBox = 'open'
   }
   getInfo(){
     this.http.get(this.websiteTableData, {responseType: 'text'})
