@@ -1,0 +1,140 @@
+
+<!-- <a rel="icon" type="image/x-icon" href="/assets/technifunds.png"></a> -->
+<div>
+  <img src="/assets/technifunds.png" alt="TechniFunds" width="100" height="100">
+</div>
+
+<div style="padding-left: 2%; padding-right: 2%; float: left;">
+  <h1 style="padding-left: 10%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; font-size: xx-large; color: darkcyan;">TechniFunds</h1>
+  <h3 style="padding-left: 10%;">By Group-9</h3>
+</div>
+
+
+
+<br>
+<!-- <br> -->
+<!-- <a>TechniFunds is a Deep Learning Enabled Stock Screener. All our stock suggestions are powered by Technical, Fundamental, and Sentimental insights.</a> -->
+<!-- <br>
+<br> -->
+<mat-form-field appearance="fill">
+  <mat-label>Risk Appetite</mat-label>
+  <mat-select [(ngModel)]="risk">
+    <mat-option value="Low">Low</mat-option>
+    <mat-option value="Medium">Medium</mat-option>
+    <mat-option value="High">High</mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-form-field appearance="fill">
+  <mat-label>Investment Duration</mat-label>
+  <mat-select [(ngModel)]="invDuration">
+    <mat-option value="short">1 Day</mat-option>
+    <mat-option value="medium">1 Week</mat-option>
+    <mat-option value="long">1 Month</mat-option>
+  </mat-select>
+</mat-form-field>
+<button mat-raised-button (click)="searchClick()">Search</button>
+<br>
+<div *ngIf=flag>
+  <table mat-table [dataSource]="dataSource">
+    <!-- Company Column -->
+    <ng-container matColumnDef="company">
+      <th mat-header-cell *matHeaderCellDef style="text-align: center; font-size: large; font-family: 'Times New Roman', Times, serif;">Company</th>
+      <td mat-cell *matCellDef="let element" (click)="selectCompany(element)" style="color:blue; background-color: bisque; text-align: center;">{{element.company}}</td>
+    </ng-container>
+  
+    <!-- Current Market Price Column -->
+    <ng-container matColumnDef="currentMarketPrice">
+      <th mat-header-cell *matHeaderCellDef style="text-align: center; font-size: large; font-family: 'Times New Roman', Times, serif;">Current Market Price(INR)</th>
+      <td mat-cell *matCellDef="let element" style="background-color: bisque; text-align: center;">{{element.currentMarketPrice}}</td>
+    </ng-container>
+    
+    <!-- Signal Column -->
+    <ng-container matColumnDef="signal">
+      <th mat-header-cell *matHeaderCellDef style="text-align: center; font-size: large; font-family: 'Times New Roman', Times, serif;">Signal</th>
+      <td mat-cell *matCellDef="let element" [ngStyle]="{'background-color':element.signalColor}">{{element.signal}}</td>
+    </ng-container>
+
+    <!-- Fundamental Score Column -->
+    <ng-container matColumnDef="fundamentalScore">
+      <th mat-header-cell *matHeaderCellDef style="text-align: center; font-size: large; font-family: 'Times New Roman', Times, serif;">Fundamental Score</th>
+      <td mat-cell *matCellDef="let element"  [ngStyle]="{'background-color':element.fundamentalColor}">{{element.fundamentalScore}}</td>
+    </ng-container>
+
+    <!-- Sentiment Score Column -->
+    <ng-container matColumnDef="sentimentScore" >
+      <th mat-header-cell *matHeaderCellDef style="text-align: center; font-size: large; font-family: 'Times New Roman', Times, serif;">Sentiment Score</th>
+      <td mat-cell *matCellDef="let element"  [ngStyle]="{'background-color':element.sentimentColor}">{{element.sentimentScore}}</td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+        mat-row
+        (click)="clickedRows.add(row)"
+        [class.demo-row-is-clicked]="clickedRows.has(row)"
+        *matRowDef="let row; columns: displayedColumns;"
+    ></tr>
+  </table>
+  <a style="font-size: 0;">{{dataSource[0].sentimentColor}}</a>
+  <!-- <div>
+    <h3>
+      Click Log
+    </h3>
+  </div>
+  
+  <div *ngIf="!clickedRows.size">
+    Clicked rows will be logged here
+  </div>
+  
+  <ul>
+    <li *ngFor="let clickedRow of clickedRows">
+      Clicked on {{clickedRow.company}}
+    </li>
+  </ul> -->
+  <div *ngIf = selectFlag>
+    <h1 style="color:blue">{{selectedStock.company}}</h1>
+    <br>
+    <h3>NSE Ticker: {{selectedStock.nseTicker}}</h3>
+    <h3>Sector: {{selectedStock.sector}}</h3>
+    <h4 style="color:blue">Technical Analysis</h4>
+    <br>
+    <div>
+      <p>Current Market Price (INR): {{selectedStock.currentMarketPrice}}</p>
+      <p>Predicted Price (INR): {{selectedStock.predictedPrice}}</p>
+      <div style="float: left;padding-bottom: 1%;" *ngIf="selectedStock.predictedPrice>selectedStock.currentMarketPrice" class="arrow-up">
+      </div>
+      <br>
+      <div style="float: left;padding-bottom: 1%;" *ngIf="selectedStock.predictedPrice<selectedStock.currentMarketPrice" class="arrow-down">
+      </div> 
+      <br>
+      <p [ngStyle]="{'color':changePercentColor}">Change Percent: {{changePercent}}%</p>
+      <p>Stop Loss (INR): {{selectedStock.stopLoss}}</p>
+      <div class="circleText" [ngStyle]="{'background-color':selectedStock.signalColor}">{{selectedStock.signal}}</div>
+      <img src="{{supportResistanceChartPath}}" alt="supportResistanceChartPath" width="800" height="800">
+    </div>
+    <h4 style="color:blue">Fundamental Analysis</h4>
+    <div>
+      <div class="circle" [ngStyle]="{'background-color':selectedStock.fundamentalColor}">{{selectedStock.fundamentalScore}}</div>
+      <br>
+      <p>Piotroski Score: {{selectedStock.piotroskiScore}}</p>
+      <p>Basic EPS: {{selectedStock.basicEPS}}</p>
+      <p>Return on Equity: {{selectedStock.ROE}}</p>
+      <p>Gross Profit Margin: {{selectedStock.grossProfitMargin}}</p>
+      <p>Risk Class: {{selectedStock.riskClass}}</p>
+    </div>
+    <h4 style="color:blue">Sentiment Analysis</h4>
+    <br>
+    <div>
+      <div class="circle" [ngStyle]="{'background-color':selectedStock.sentimentColor}">{{selectedStock.sentimentScore}}</div>
+      <img src="{{sentimentChartPath}}" alt="sentimentChartPath" width="500" height="500">
+    </div>
+    <a>*The Stock Market is a field of Speculation and is subject to Market Risk. TechniFunds does not take any responsibility on your investment decisions.</a>
+    <!-- <nav>
+      <a routerLink="/popup" routerLinkActive="active">{{selectedStock.company}}</a>
+    </nav>
+    <router-outlet></router-outlet> -->
+    <!-- <app-popup></app-popup> -->
+  </div>
+</div>
+
+
+
